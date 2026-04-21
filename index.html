@@ -35,10 +35,10 @@ width: 100%; max-width: 420px;
 background: #181818; border: 1px solid #2a2a2a;
 border-radius: 14px; padding: 14px; margin-bottom: 12px;
 }
-.editor-panel h3 { font-size: 11px; font-weight: 700; color: var(–gold); margin-bottom: 12px; letter-spacing: 1.5px; text-transform: uppercase; }
+.editor-panel h3 { font-size: 11px; font-weight: 700; color: var(–gold, #FFD700); margin-bottom: 12px; letter-spacing: 1.5px; text-transform: uppercase; }
 .mode-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
 .mode-tab { flex:1; padding:8px 4px; font-size:12px; font-weight:700; border-radius:8px; border:1.5px solid #333; cursor:pointer; background:#1e1e1e; color:#888; transition:all 0.2s; text-align:center; }
-.mode-tab.active { background:var(–red); border-color:var(–red); color:#fff; }
+.mode-tab.active { background:#B71C1C; background:var(–red, #B71C1C); border-color:#B71C1C; border-color:var(–red, #B71C1C); color:#fff; }
 
 /* subtype picker row */
 .subtype-picker { display:none; flex-wrap:wrap; gap:7px; margin-bottom:10px; }
@@ -46,17 +46,17 @@ border-radius: 14px; padding: 14px; margin-bottom: 12px;
 .stype-btn {
 padding:7px 13px; font-size:14px; font-weight:800;
 border-radius:8px; border:2px solid #3a1818;
-background:var(–red-mid); color:#ddd; cursor:pointer;
+background:#2a1010; background:var(–red-mid, #2a1010); color:#ddd; cursor:pointer;
 transition:all 0.18s; font-family:‘Bebas Neue’,sans-serif; letter-spacing:1px;
 }
-.stype-btn.selected { background:var(–red); border-color:var(–critical); color:#fff; }
+.stype-btn.selected { background:#B71C1C; background:var(–red, #B71C1C); border-color:#EF5350; border-color:var(–critical, #EF5350); color:#fff; }
 
 .toggle-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
 .toggle-row label { font-size:12px; color:#aaa; font-weight:600; }
 .toggle-switch { position:relative; width:38px; height:22px; cursor:pointer; }
 .toggle-switch input { opacity:0; width:0; height:0; }
 .toggle-track { position:absolute; inset:0; background:#444; border-radius:11px; transition:background 0.2s; }
-.toggle-switch input:checked + .toggle-track { background:var(–red); }
+.toggle-switch input:checked + .toggle-track { background:var(–red, #B71C1C); }
 .toggle-thumb { position:absolute; top:3px; left:3px; width:16px; height:16px; background:#fff; border-radius:50%; transition:left 0.2s; pointer-events:none; }
 .toggle-switch input:checked ~ .toggle-thumb { left:19px; }
 .editor-row { display:flex; align-items:flex-start; gap:8px; margin-bottom:8px; }
@@ -66,16 +66,16 @@ flex:1; background:#222; border:1px solid #333; border-radius:8px;
 color:#fff; font-size:13px; padding:7px 10px; outline:none; font-family:inherit; resize:vertical;
 }
 .editor-row textarea { min-height:54px; line-height:1.45; }
-.editor-row input:focus, .editor-row textarea:focus { border-color:var(–red); }
+.editor-row input:focus, .editor-row textarea:focus { border-color:var(–red, #B71C1C); }
 
 /* ═══ FORMAT BAR ═════════════════════════ */
 .format-bar { display:flex; gap:8px; margin-bottom:12px; justify-content:center; }
 .fmt-btn { padding:8px 16px; font-size:12px; font-weight:700; border-radius:20px; border:2px solid #333; cursor:pointer; background:#1a1a1a; color:#fff; transition:all 0.2s; white-space:nowrap; }
-.fmt-btn.active { background:var(–red); border-color:var(–red); }
+.fmt-btn.active { background:var(–red, #B71C1C); border-color:var(–red, #B71C1C); }
 
 /* ═══ POSTER ════════════════════════════ */
 .poster-wrap { width:100%; max-width:420px; }
-.poster { background:var(–red-deep); color:#fff; border-radius:16px; overflow:hidden; width:100%; position:relative; }
+.poster { background:var(–red-deep, #1a0a0a); color:#fff; border-radius:16px; overflow:hidden; width:100%; position:relative; }
 .poster.square { aspect-ratio:1/1; overflow:hidden; }
 .poster.square .poster-inner { position:absolute; top:0; left:0; width:100%; transform-origin:top left; }
 .poster.portrait .poster-inner { position:static; width:100%; }
@@ -132,7 +132,7 @@ background-size:200% 100%; animation:shimmer 2.8s 1s infinite linear; pointer-ev
 /* ═══ HEADER (pure CSS — no external image needed) ══ */
 .hdr {
 background: linear-gradient(135deg, #1a0505 0%, #2a0808 60%, #1a0505 100%);
-border-bottom: 4px solid var(–gold);
+border-bottom: 4px solid var(–gold, #FFD700);
 padding: 14px 14px 12px;
 display: flex;
 align-items: center;
@@ -148,17 +148,17 @@ pointer-events:none;
 }
 .hdr-logo {
 width: 52px; height: 52px; flex-shrink:0;
-background: var(–red); border-radius: 50%;
+background: var(–red, #B71C1C); border-radius: 50%;
 display:flex; align-items:center; justify-content:center;
 font-size:26px; position:relative; z-index:1;
-border: 2px solid var(–gold);
+border: 2px solid var(–gold, #FFD700);
 box-shadow: 0 0 16px rgba(239,83,80,0.5);
 }
 .hdr-text { position:relative; z-index:1; }
 .hdr-name {
 font-family:‘Bebas Neue’,sans-serif;
 font-size: clamp(18px,5.5vw,24px);
-color: var(–gold); letter-spacing:2px; line-height:1;
+color: var(–gold, #FFD700); letter-spacing:2px; line-height:1;
 }
 .hdr-dept { font-size: clamp(9px,2.4vw,11px); color:#fff; font-weight:700; margin-top:3px; line-height:1.5; }
 .hdr-min  { font-size: clamp(8px,2.1vw,10px); color:#ccc; margin-top:1px; line-height:1.4; }
@@ -171,7 +171,7 @@ object-fit:cover; object-position:center; display:none; z-index:2;
 
 /* ═══ TICKER ═══════════════════════════ */
 .ticker-wrap {
-background: var(–red);
+background: var(–red, #B71C1C);
 padding: 6px 0;
 overflow: hidden;
 white-space: nowrap;
@@ -186,11 +186,11 @@ font-weight:800; color:#fff; letter-spacing:1px;
 text-transform:uppercase; font-family:‘Bebas Neue’,sans-serif;
 padding-left: 100%;
 }
-.ticker-sep { color:var(–gold); margin:0 12px; }
+.ticker-sep { color:var(–gold, #FFD700); margin:0 12px; }
 
 /* ═══ STATUS BAR ════════════════════════ */
 .status-bar {
-background:var(–gold); padding:10px 14px;
+background:var(–gold, #FFD700); padding:10px 14px;
 display:flex; align-items:center; justify-content:space-between;
 }
 .status-label {
@@ -198,12 +198,12 @@ font-size:clamp(14px,4vw,17px); font-weight:800; color:#1a0a0a;
 display:flex; align-items:center; gap:6px;
 font-family:‘Bebas Neue’,sans-serif; letter-spacing:1px;
 }
-.status-date { font-size:clamp(10px,2.6vw,12px); font-weight:800; color:var(–gold-dim); }
+.status-date { font-size:clamp(10px,2.6vw,12px); font-weight:800; color:var(–gold-dim, #7a3300); }
 
 /* ═══ URGENT BANNER ════════════════════ */
 .urgent-banner {
 background: linear-gradient(135deg, #300000 0%, #1f0000 100%);
-border-left: 5px solid var(–critical);
+border-left: 5px solid var(–critical, #EF5350);
 padding: 10px 14px;
 display: flex; gap:10px; align-items:flex-start;
 animation: urgentFlash 2.5s 1.5s infinite;
@@ -217,7 +217,7 @@ animation:scanline 3s 1s infinite linear; pointer-events:none;
 }
 .u-icon { font-size:20px; flex-shrink:0; animation:heartbeat 1.5s 1s infinite; display:inline-block; margin-top:1px; }
 .u-label {
-font-size:clamp(10px,2.8vw,12px); font-weight:800; color:var(–critical);
+font-size:clamp(10px,2.8vw,12px); font-weight:800; color:var(–critical, #EF5350);
 text-transform:uppercase; letter-spacing:1.5px; margin-bottom:4px;
 font-family:‘Bebas Neue’,sans-serif;
 }
@@ -226,8 +226,8 @@ font-family:‘Bebas Neue’,sans-serif;
 /* ═══ BLOOD GRID ═══════════════════════ */
 .blood-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:10px; }
 .blood-card {
-background:var(–red-mid); border-radius:12px; padding:12px 10px;
-border:1.5px solid var(–red-edge); transition:transform 0.15s;
+background:var(–red-mid, #2a1010); border-radius:12px; padding:12px 10px;
+border:1.5px solid var(–red-edge, #3a1818); transition:transform 0.15s;
 }
 .blood-card:active { transform:scale(0.97); }
 .blood-letter {
@@ -241,7 +241,7 @@ font-family:‘Bebas Neue’,sans-serif; letter-spacing:2px;
 font-size:clamp(8px,2.2vw,11px); font-weight:800; padding:4px 9px;
 border-radius:20px; text-transform:uppercase; letter-spacing:0.5px;
 }
-.badge.critical { background:var(–red);   color:#fff; }
+.badge.critical { background:var(–red, #B71C1C);   color:#fff; }
 .badge.low      { background:#E65100;       color:#fff; }
 .badge.adequate { background:#4E342E;       color:#FFCCBC; }
 .badge.good     { background:#1B5E20;       color:#C8E6C9; }
@@ -264,7 +264,7 @@ margin-bottom:0;
 .hero-subtype-label {
 font-family:‘Bebas Neue’,sans-serif;
 font-size:clamp(28px,8vw,42px); letter-spacing:3px;
-color:var(–gold); line-height:1; margin-bottom:10px;
+color:var(–gold, #FFD700); line-height:1; margin-bottom:10px;
 text-shadow:0 0 20px rgba(255,215,0,0.5);
 }
 /* status pill - big single badge */
@@ -274,44 +274,44 @@ padding:12px 36px; border-radius:40px; text-transform:uppercase;
 letter-spacing:3px; font-family:‘Bebas Neue’,sans-serif;
 margin-bottom:14px;
 }
-.hero-status.critical { background:var(–red);   color:#fff; }
+.hero-status.critical { background:var(–red, #B71C1C);   color:#fff; }
 .hero-status.low      { background:#E65100;       color:#fff; }
 .hero-status.adequate { background:#4E342E;       color:#FFCCBC; }
 .hero-status.good     { background:#1B5E20;       color:#C8E6C9; }
 
 /* call to action strip */
 .hero-cta {
-width:100%; background:var(–red-mid); border-radius:10px;
-padding:10px 14px; border:1.5px solid var(–red-edge);
+width:100%; background:var(–red-mid, #2a1010); border-radius:10px;
+padding:10px 14px; border:1.5px solid var(–red-edge, #3a1818);
 text-align:center;
 }
 .hero-cta-text {
 font-size:clamp(12px,3.2vw,14px); color:#ffcdd2; font-weight:700; line-height:1.5;
 }
-.hero-cta-bold { color:var(–gold); font-family:‘Bebas Neue’,sans-serif; font-size:clamp(14px,4vw,17px); display:block; letter-spacing:1px; margin-bottom:2px; }
+.hero-cta-bold { color:var(–gold, #FFD700); font-family:‘Bebas Neue’,sans-serif; font-size:clamp(14px,4vw,17px); display:block; letter-spacing:1px; margin-bottom:2px; }
 
 /* ═══ LEGEND ═══════════════════════════ */
 .legend { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; padding:2px 10px 10px; }
 .leg-item { display:flex; align-items:center; gap:4px; font-size:clamp(10px,2.8vw,12px); color:#bbb; font-weight:700; }
 .dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
-.dot.critical { background:var(–critical); }
-.dot.low      { background:var(–low); }
-.dot.adequate { background:var(–adequate); }
-.dot.good     { background:var(–good); }
+.dot.critical { background:var(–critical, #EF5350); }
+.dot.low      { background:var(–low, #FF7043); }
+.dot.adequate { background:var(–adequate, #8D6E63); }
+.dot.good     { background:var(–good, #4CAF50); }
 
-.divider { border:none; border-top:1.5px solid var(–red-edge); margin:0 10px; }
+.divider { border:none; border-top:1.5px solid var(–red-edge, #3a1818); margin:0 10px; }
 
 /* ═══ HOURS ════════════════════════════ */
 .hours-section { padding:10px 12px; }
 .sec-title {
-font-size:clamp(12px,3.5vw,14px); font-weight:800; color:var(–gold);
+font-size:clamp(12px,3.5vw,14px); font-weight:800; color:var(–gold, #FFD700);
 margin-bottom:8px; display:flex; align-items:center; gap:5px;
 font-family:‘Bebas Neue’,sans-serif; letter-spacing:1px;
 }
 .sessions { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:8px; }
-.session-card { background:var(–red-mid); border-radius:8px; padding:8px; text-align:center; border:1px solid var(–red-edge); }
+.session-card { background:var(–red-mid, #2a1010); border-radius:8px; padding:8px; text-align:center; border:1px solid var(–red-edge, #3a1818); }
 .sess-label { font-size:clamp(8px,2.2vw,10px); color:#aaa; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:3px; }
-.sess-time  { font-size:clamp(11px,3vw,13px); font-weight:800; color:var(–gold); }
+.sess-time  { font-size:clamp(11px,3vw,13px); font-weight:800; color:var(–gold, #FFD700); }
 .days-list  { display:flex; flex-direction:column; gap:4px; }
 .day-row    { font-size:clamp(11px,3vw,13px); font-weight:600; }
 .day-row.open   { color:#A5D6A7; }
@@ -319,18 +319,18 @@ font-family:‘Bebas Neue’,sans-serif; letter-spacing:1px;
 
 /* ═══ APP ══════════════════════════════ */
 .app-section {
-margin:0 12px 10px; background:var(–red-mid); border-radius:8px;
-padding:10px 12px; border:1px solid var(–gold);
+margin:0 12px 10px; background:var(–red-mid, #2a1010); border-radius:8px;
+padding:10px 12px; border:1px solid var(–gold, #FFD700);
 display:flex; align-items:center; gap:8px;
 }
-.app-title { font-size:clamp(11px,3vw,13px); font-weight:800; color:var(–gold); }
+.app-title { font-size:clamp(11px,3vw,13px); font-weight:800; color:var(–gold, #FFD700); }
 .app-sub   { font-size:clamp(10px,2.5vw,11px); color:#ccc; margin-top:2px; }
 
 /* ═══ FOOTER ═══════════════════════════ */
-.footer { background:var(–red); padding:10px 14px; display:flex; justify-content:space-between; align-items:center; }
-.footer-ig      { display:flex; align-items:center; gap:5px; font-size:clamp(11px,3vw,13px); font-weight:800; color:var(–gold); }
+.footer { background:var(–red, #B71C1C); padding:10px 14px; display:flex; justify-content:space-between; align-items:center; }
+.footer-ig      { display:flex; align-items:center; gap:5px; font-size:clamp(11px,3vw,13px); font-weight:800; color:var(–gold, #FFD700); }
 .footer-contact { font-size:clamp(9px,2.5vw,11px); color:#fff; font-weight:700; margin-top:2px; }
-.footer-slogan  { font-size:clamp(11px,3vw,13px); font-weight:800; color:var(–gold); text-align:right; line-height:1.4; letter-spacing:0.5px; font-family:‘Bebas Neue’,sans-serif; }
+.footer-slogan  { font-size:clamp(11px,3vw,13px); font-weight:800; color:var(–gold, #FFD700); text-align:right; line-height:1.4; letter-spacing:0.5px; font-family:‘Bebas Neue’,sans-serif; }
 .ig-icon { width:17px; height:17px; flex-shrink:0; }
 
 /* ═══ SQUARE MODE ══════════════════════ */
@@ -340,15 +340,23 @@ display:flex; align-items:center; gap:8px;
 
 /* ═══ SAVE ════════════════════════════ */
 .save-wrap { margin-top:12px; text-align:center; }
+.save-btns { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
 .save-btn {
-padding:11px 30px; font-size:14px; font-weight:700;
-background:var(–red); color:#fff; border:none; border-radius:20px;
+padding:11px 22px; font-size:13px; font-weight:700;
+background:#B71C1C; background:var(–red, #B71C1C); color:#fff; border:none; border-radius:20px;
 cursor:pointer; -webkit-appearance:none; letter-spacing:0.5px;
-transition:transform 0.15s;
+transition:transform 0.15s; display:inline-flex; align-items:center; gap:6px;
+}
+.save-btn.vid-btn {
+background:#1B5E20; background:var(–good,#4CAF50); color:#fff;
+}
+.save-btn.vid-btn.recording {
+background:#E65100; animation:pulseCrit 1s infinite;
 }
 .save-btn:active { transform:scale(0.96); }
-.save-note { font-size:11px; color:#999; margin-top:5px; }
+.save-note { font-size:11px; color:#999; margin-top:7px; }
 .save-hint { font-size:12px; color:#bbb; margin-top:4px; }
+.rec-timer { font-size:11px; color:#ff8a65; margin-top:4px; min-height:16px; }
 </style>
 
 </head>
@@ -571,9 +579,13 @@ transition:transform 0.15s;
 <!-- Save -->
 
 <div class="save-wrap">
-  <button class="save-btn" onclick="savePoster()">💾 Save Poster (PNG)</button>
-  <div class="save-note">Saves as a still PNG image — animations play on screen only</div>
+  <div class="save-btns">
+    <button class="save-btn" onclick="savePoster()">💾 Save PNG</button>
+    <button class="save-btn vid-btn" id="recBtn" onclick="toggleRecord()">🎬 Record Video</button>
+  </div>
+  <div class="save-note">PNG = still image &nbsp;|&nbsp; Video = animated WebM (plays everywhere)</div>
   <div class="save-hint" id="hint">Portrait 9:16 — for Instagram Reels &amp; Stories</div>
+  <div class="rec-timer" id="recTimer"></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -684,7 +696,7 @@ function savePoster() {
   var hint   = document.getElementById('hint');
   var poster = document.getElementById('poster');
   var inner  = document.getElementById('posterInner');
-  hint.textContent = 'Generating…';
+  hint.textContent = 'Generating PNG…';
   poster.classList.remove('animate');
 
   var origT=inner.style.transform, origW=inner.style.width,
@@ -709,9 +721,9 @@ function savePoster() {
       var a=document.createElement('a');
       a.download='bloodbank_ripas'+suffix+'_'+currentFmt+'.png';
       a.href=fc.toDataURL('image/png'); a.click();
-      hint.textContent='Saved ✓ ('+a.download+')';
+      hint.textContent='PNG saved ✓ ('+a.download+')';
     })
-    .catch(function(){ hint.textContent='Long-press poster → Save Image'; })
+    .catch(function(){ hint.textContent='Try: long-press poster → Save Image'; })
     .finally(function(){
       if (currentFmt==='square') {
         inner.style.transform=origT; inner.style.width=origW;
@@ -719,6 +731,141 @@ function savePoster() {
       }
       poster.classList.add('animate');
     });
+}
+
+/* ── ANIMATED VIDEO RECORDING via MediaRecorder ── */
+var mediaRecorder = null;
+var recordedChunks = [];
+var recInterval   = null;
+var recSeconds    = 0;
+var REC_DURATION  = 8; // seconds to record (covers full animation cycle)
+
+function toggleRecord() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    stopRecord();
+  } else {
+    startRecord();
+  }
+}
+
+function startRecord() {
+  var btn   = document.getElementById('recBtn');
+  var timer = document.getElementById('recTimer');
+  var hint  = document.getElementById('hint');
+
+  // Try to capture the poster element as a video stream
+  var poster = document.getElementById('poster');
+  var canvas;
+
+  // Preferred: captureStream from a canvas drawn by html2canvas at 30fps
+  // We do a canvas-based screen capture loop
+  var w = poster.offsetWidth  * 2;
+  var h = poster.offsetHeight * 2;
+  canvas = document.createElement('canvas');
+  canvas.width  = w;
+  canvas.height = h;
+  var ctx = canvas.getContext('2d');
+
+  var stream;
+  try {
+    stream = canvas.captureStream(30);
+  } catch(e) {
+    hint.textContent = '⚠ Video recording not supported in this browser.';
+    return;
+  }
+
+  // Check codec support
+  var mimeType = '';
+  var candidates = ['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm','video/mp4'];
+  for (var i=0; i<candidates.length; i++) {
+    if (MediaRecorder.isTypeSupported(candidates[i])) { mimeType = candidates[i]; break; }
+  }
+
+  recordedChunks = [];
+  try {
+    mediaRecorder = new MediaRecorder(stream, mimeType ? {mimeType:mimeType} : {});
+  } catch(e) {
+    hint.textContent = '⚠ MediaRecorder not available. Try Chrome or Firefox.';
+    return;
+  }
+
+  mediaRecorder.ondataavailable = function(e) {
+    if (e.data && e.data.size > 0) recordedChunks.push(e.data);
+  };
+
+  mediaRecorder.onstop = function() {
+    clearInterval(recInterval);
+    var blob = new Blob(recordedChunks, {type: mimeType || 'video/webm'});
+    var ext  = mimeType.includes('mp4') ? 'mp4' : 'webm';
+    var suffix = currentMode==='single'? '_'+selectedType.replace('−','-') : '_all';
+    var url = URL.createObjectURL(blob);
+    var a   = document.createElement('a');
+    a.download = 'bloodbank_ripas'+suffix+'_'+currentFmt+'_animated.'+ext;
+    a.href = url; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 5000);
+    btn.textContent  = '🎬 Record Video';
+    btn.classList.remove('recording');
+    timer.textContent = 'Video saved ✓ — upload directly to Instagram / WhatsApp';
+    hint.textContent  = currentFmt==='portrait'
+      ? 'Portrait 9:16 — for Instagram Reels & Stories'
+      : 'Square 1:1 — for Instagram Feed posts';
+  };
+
+  // Kick off animation replay
+  var p = document.getElementById('poster');
+  p.classList.remove('animate');
+  void p.offsetWidth;
+  p.classList.add('animate');
+
+  // Draw loop: snapshot the live DOM via html2canvas repeatedly
+  var frameCount = 0;
+  var fps = 30;
+  var totalFrames = REC_DURATION * fps;
+
+  function drawFrame() {
+    if (!mediaRecorder || mediaRecorder.state !== 'recording') return;
+    html2canvas(document.getElementById('posterInner'), {
+      scale: 2,
+      backgroundColor: '#1a0a0a',
+      useCORS: true,
+      logging: false,
+      allowTaint: true
+    }).then(function(fc) {
+      ctx.drawImage(fc, 0, 0, w, h);
+      frameCount++;
+      if (frameCount < totalFrames && mediaRecorder.state === 'recording') {
+        setTimeout(drawFrame, 1000/fps);
+      } else if (mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+      }
+    });
+  }
+
+  mediaRecorder.start();
+  btn.textContent = '⏹ Stop Recording';
+  btn.classList.add('recording');
+  recSeconds = 0;
+  timer.textContent = 'Recording… 0s / '+REC_DURATION+'s';
+
+  recInterval = setInterval(function() {
+    recSeconds++;
+    timer.textContent = 'Recording… '+recSeconds+'s / '+REC_DURATION+'s';
+    if (recSeconds >= REC_DURATION && mediaRecorder && mediaRecorder.state==='recording') {
+      stopRecord();
+    }
+  }, 1000);
+
+  drawFrame();
+}
+
+function stopRecord() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+  }
+  clearInterval(recInterval);
+  var btn = document.getElementById('recBtn');
+  btn.textContent = '🎬 Record Video';
+  btn.classList.remove('recording');
 }
 
 window.addEventListener('resize',function(){ if(currentFmt==='square') applySquareScale(); });
