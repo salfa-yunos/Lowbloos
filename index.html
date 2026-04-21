@@ -590,8 +590,6 @@ background:#E65100; animation:pulseCrit 1s infinite;
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>
-
 <script>
 var currentFmt  = 'portrait';
 var currentMode = 'all';
@@ -735,7 +733,186 @@ function savePoster() {
     });
 }
 
-/* ── ANIMATED GIF via gif.js (works on iPhone, Android, everywhere) ── */
+/* ══════════════════════════════════════════════════════════════
+   SELF-CONTAINED GIF ENCODER  (no external worker, no CDN)
+   Pure JS LZW + GIF89a byte builder — works on iPhone Safari,
+   Chrome, Firefox, Android — zero cross-origin issues.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Median-cut colour quantiser (max 256 colours) ── */
+function quantize(pixels, maxColors) {
+  // Build initial palette by sampling
+  var colorMap = {};
+  var i, r, g, b, key;
+  for (i = 0; i < pixels.length; i += 4) {
+    r = pixels[i] >> 2; g = pixels[i+1] >> 2; b = pixels[i+2] >> 2; // 6-bit
+    key = (r << 12) | (g << 6) | b;
+    colorMap[key] = (colorMap[key] || 0) + 1;
+  }
+  var keys = Object.keys(colorMap);
+  // Sort by frequency and take top maxColors
+  keys.sort(function(a,b){ return colorMap[b]-colorMap[a]; });
+  keys = keys.slice(0, maxColors);
+  var palette = [];
+  for (i = 0; i < keys.length; i++) {
+    var k = parseInt(keys[i]);
+    palette.push([(k>>12)<<2, ((k>>6)&63)<<2, (k&63)<<2]);
+  }
+  // Pad to maxColors
+  while (palette.length < maxColors) palette.push([0,0,0]);
+  return palette;
+}
+
+/* ── Nearest palette colour (Euclidean) with cache ── */
+function nearestColor(r, g, b, palette, cache) {
+  var key = (r>>2)+'|'+(g>>2)+'|'+(b>>2);
+  if (cache[key] !== undefined) return cache[key];
+  var best = 0, bestD = Infinity;
+  for (var i = 0; i < palette.length; i++) {
+    var dr=r-palette[i][0], dg=g-palette[i][1], db=b-palette[i][2];
+    var d = dr*dr + dg*dg + db*db;
+    if (d < bestD) { bestD = d; best = i; if(d===0) break; }
+  }
+  cache[key] = best;
+  return best;
+}
+
+/* ── LZW encoder ── */
+function lzwEncode(indices, minCodeSize) {
+  var clearCode = 1 << minCodeSize;
+  var eofCode   = clearCode + 1;
+  var codeSize  = minCodeSize + 1;
+  var maxCode   = 1 << codeSize;
+  var table     = {};
+  var output    = [];
+  var buf = 0, bufBits = 0;
+
+  function emit(code) {
+    buf |= code << bufBits;
+    bufBits += codeSize;
+    while (bufBits >= 8) { output.push(buf & 0xFF); buf >>= 8; bufBits -= 8; }
+  }
+
+  function resetTable() {
+    table = {};
+    codeSize = minCodeSize + 1;
+    maxCode  = 1 << codeSize;
+    nextCode = eofCode + 1;
+  }
+
+  var nextCode = eofCode + 1;
+  emit(clearCode);
+
+  var prefix = indices[0];
+  for (var i = 1; i < indices.length; i++) {
+    var c = indices[i];
+    var key = prefix + ',' + c;
+    if (table[key] !== undefined) {
+      prefix = table[key];
+    } else {
+      emit(prefix);
+      if (nextCode < 4096) {
+        table[key] = nextCode++;
+        if (nextCode > maxCode && codeSize < 12) { codeSize++; maxCode <<= 1; }
+      } else {
+        emit(clearCode);
+        resetTable();
+      }
+      prefix = c;
+    }
+  }
+  emit(prefix);
+  emit(eofCode);
+  if (bufBits > 0) output.push(buf & 0xFF);
+  return output;
+}
+
+/* ── Pack LZW bytes into GIF sub-blocks (max 255 bytes each) ── */
+function packSubBlocks(bytes) {
+  var out = [];
+  for (var i = 0; i < bytes.length; ) {
+    var size = Math.min(255, bytes.length - i);
+    out.push(size);
+    for (var j = 0; j < size; j++) out.push(bytes[i++]);
+  }
+  out.push(0); // block terminator
+  return out;
+}
+
+/* ── Write little-endian 16-bit ── */
+function word(n) { return [n & 0xFF, (n >> 8) & 0xFF]; }
+
+/* ── Build complete GIF89a binary from array of {canvas, delay} frames ── */
+function buildGIF(frames, width, height) {
+  var colorDepth = 8; // 256 colours
+  var paletteSize = 256;
+
+  // Collect all bytes
+  var bytes = [];
+  function push(arr) { for(var i=0;i<arr.length;i++) bytes.push(arr[i]); }
+  function pushStr(s){ for(var i=0;i<s.length;i++) bytes.push(s.charCodeAt(i)); }
+
+  // Header
+  pushStr('GIF89a');
+  push(word(width)); push(word(height));
+  bytes.push(0xF7); // Global CT flag, color res 8, sorted 0, CT size 7 (256 entries)
+  bytes.push(0);    // background index
+  bytes.push(0);    // pixel aspect
+
+  // Build a global palette from the first frame
+  var firstCtx = frames[0].canvas.getContext('2d');
+  var firstPx  = firstCtx.getImageData(0,0,width,height).data;
+  var palette  = quantize(firstPx, paletteSize);
+  for (var pi = 0; pi < paletteSize; pi++) {
+    bytes.push(palette[pi][0]||0);
+    bytes.push(palette[pi][1]||0);
+    bytes.push(palette[pi][2]||0);
+  }
+
+  // Netscape looping extension
+  push([0x21,0xFF,0x0B]);
+  pushStr('NETSCAPE2.0');
+  push([0x03,0x01,0x00,0x00,0x00]);
+
+  // Each frame
+  for (var f = 0; f < frames.length; f++) {
+    var canvas = frames[f].canvas;
+    var delay  = Math.round(frames[f].delay / 10); // centiseconds
+
+    var ctx  = canvas.getContext('2d');
+    var imgd = ctx.getImageData(0,0,width,height).data;
+
+    // Quantise pixels to palette indices
+    var cache   = {};
+    var indices = new Uint8Array(width * height);
+    for (var px = 0; px < width*height; px++) {
+      var base = px*4;
+      indices[px] = nearestColor(imgd[base], imgd[base+1], imgd[base+2], palette, cache);
+    }
+
+    // Graphic control extension (delay)
+    push([0x21,0xF9,0x04,0x00]);
+    push(word(delay));
+    push([0x00,0x00]);
+
+    // Image descriptor
+    bytes.push(0x2C);
+    push(word(0)); push(word(0));       // left, top
+    push(word(width)); push(word(height));
+    bytes.push(0x00); // no local CT, not interlaced
+
+    // LZW image data
+    var minCode = colorDepth;
+    bytes.push(minCode);
+    var lzw = lzwEncode(Array.from(indices), minCode);
+    push(packSubBlocks(lzw));
+  }
+
+  bytes.push(0x3B); // GIF trailer
+  return new Uint8Array(bytes);
+}
+
+/* ── Main GIF capture + encode function ── */
 var gifEncoding = false;
 
 function makeGif() {
@@ -744,90 +921,83 @@ function makeGif() {
   var timer = document.getElementById('recTimer');
   var hint  = document.getElementById('hint');
 
-  // Settings: 10fps × 6s = 60 frames — good quality, manageable file size
-  var FPS        = 10;
-  var DURATION   = 6;   // seconds — covers full entrance + looping effects
-  var TOTAL      = FPS * DURATION;
-  var DELAY      = Math.round(1000 / FPS); // ms per frame
-  var SCALE      = 1;   // keep at 1 for reasonable file size; bump to 2 for retina
+  var FPS      = 8;   // 8fps × 5s = 40 frames — good balance of smoothness vs file size
+  var DURATION = 5;
+  var TOTAL    = FPS * DURATION;
+  var DELAY    = Math.round(1000 / FPS);
 
   var inner  = document.getElementById('posterInner');
-  var width  = inner.offsetWidth  * SCALE;
-  var height = inner.offsetHeight * SCALE;
+  var W = inner.offsetWidth;
+  var H = inner.offsetHeight;
 
-  // Replay animation from start
+  // Replay animation
   var poster = document.getElementById('poster');
   poster.classList.remove('animate');
   void poster.offsetWidth;
   poster.classList.add('animate');
 
   gifEncoding = true;
-  btn.textContent = '⏳ Building GIF…';
+  btn.textContent = '⏳ Capturing…';
   btn.classList.add('recording');
-  timer.textContent = 'Capturing frame 1 / ' + TOTAL + '  (this takes ~' + DURATION + 's, please wait)';
+  timer.textContent = 'Frame 0 / ' + TOTAL;
 
-  var gif = new GIF({
-    workers:    2,
-    quality:    8,        // 1=best, 30=fastest; 8 is a good balance
-    width:      width,
-    height:     height,
-    workerScript: 'https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js',
-    repeat:     0         // 0 = loop forever
-  });
-
-  var frameIndex = 0;
+  var frames = [];
 
   function captureFrame() {
-    if (frameIndex >= TOTAL) {
-      // All frames captured — start encoding
-      btn.textContent = '⚙ Encoding GIF…';
-      timer.textContent = 'Encoding… 0%';
-      gif.render();
+    if (frames.length >= TOTAL) {
+      encodeGif();
       return;
     }
-
     html2canvas(inner, {
-      scale:           SCALE,
+      scale: 1,
       backgroundColor: '#1a0a0a',
-      useCORS:         true,
-      logging:         false,
-      allowTaint:      true
+      useCORS: true,
+      logging: false,
+      allowTaint: true
     }).then(function(canvas) {
-      gif.addFrame(canvas, { delay: DELAY, copy: true });
-      frameIndex++;
-      timer.textContent = 'Capturing frame ' + frameIndex + ' / ' + TOTAL;
+      // Resize to consistent dimensions
+      var out = document.createElement('canvas');
+      out.width = W; out.height = H;
+      out.getContext('2d').drawImage(canvas, 0, 0, W, H);
+      frames.push({ canvas: out, delay: DELAY });
+      timer.textContent = 'Capturing frame ' + frames.length + ' / ' + TOTAL;
       setTimeout(captureFrame, DELAY);
-    }).catch(function(err) {
+    }).catch(function(e) {
       gifEncoding = false;
       btn.textContent = '🎞 Save Animated GIF';
       btn.classList.remove('recording');
-      timer.textContent = '⚠ Frame capture failed: ' + err.message;
+      timer.textContent = '⚠ Capture error: ' + e.message;
     });
   }
 
-  gif.on('progress', function(p) {
-    timer.textContent = 'Encoding… ' + Math.round(p * 100) + '%';
-  });
+  function encodeGif() {
+    btn.textContent = '⚙ Encoding…';
+    timer.textContent = 'Encoding GIF… (may take 10–20s for long posters)';
+    // Yield to browser to update UI before heavy work
+    setTimeout(function() {
+      try {
+        var data   = buildGIF(frames, W, H);
+        var blob   = new Blob([data], { type: 'image/gif' });
+        var suffix = currentMode === 'single' ? '_' + selectedType.replace('−','-') : '_all';
+        var a = document.createElement('a');
+        a.download = 'bloodbank_ripas' + suffix + '_' + currentFmt + '_animated.gif';
+        a.href = URL.createObjectURL(blob);
+        a.click();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); }, 8000);
+        timer.textContent = 'GIF saved ✓ — opens on iPhone, Android, WhatsApp, everywhere!';
+        hint.textContent  = currentFmt==='portrait'
+          ? 'Portrait 9:16 — for Instagram Reels & Stories'
+          : 'Square 1:1 — for Instagram Feed posts';
+      } catch(e) {
+        timer.textContent = '⚠ Encode error: ' + e.message;
+      }
+      gifEncoding = false;
+      btn.textContent = '🎞 Save Animated GIF';
+      btn.classList.remove('recording');
+    }, 50);
+  }
 
-  gif.on('finished', function(blob) {
-    var suffix = currentMode === 'single' ? '_' + selectedType.replace('−', '-') : '_all';
-    var a = document.createElement('a');
-    a.download = 'bloodbank_ripas' + suffix + '_' + currentFmt + '_animated.gif';
-    a.href = URL.createObjectURL(blob);
-    a.click();
-    setTimeout(function() { URL.revokeObjectURL(a.href); }, 8000);
-
-    gifEncoding = false;
-    btn.textContent = '🎞 Save Animated GIF';
-    btn.classList.remove('recording');
-    timer.textContent = 'GIF saved ✓ — opens on iPhone, Android, WhatsApp, everywhere!';
-    hint.textContent  = currentFmt === 'portrait'
-      ? 'Portrait 9:16 — for Instagram Reels & Stories'
-      : 'Square 1:1 — for Instagram Feed posts';
-  });
-
-  // Start capturing after a short delay so animation has begun
-  setTimeout(captureFrame, 100);
+  setTimeout(captureFrame, 150);
 }
 
 window.addEventListener('resize',function(){ if(currentFmt==='square') applySquareScale(); });
