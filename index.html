@@ -581,9 +581,9 @@ background:#E65100; animation:pulseCrit 1s infinite;
 <div class="save-wrap">
   <div class="save-btns">
     <button class="save-btn" onclick="savePoster()">💾 Save PNG</button>
-    <button class="save-btn vid-btn" id="recBtn" onclick="toggleRecord()">🎬 Record Video</button>
+    <button class="save-btn vid-btn" id="recBtn" onclick="toggleRecord()">🎬 Record MP4</button>
   </div>
-  <div class="save-note">PNG = still image &nbsp;|&nbsp; Video = animated WebM (plays everywhere)</div>
+  <div class="save-note">PNG = still image &nbsp;|&nbsp; MP4 = animated video for Instagram, WhatsApp &amp; Stories</div>
   <div class="save-hint" id="hint">Portrait 9:16 — for Instagram Reels &amp; Stories</div>
   <div class="rec-timer" id="recTimer"></div>
 </div>
@@ -776,7 +776,7 @@ function startRecord() {
 
   // Check codec support
   var mimeType = '';
-  var candidates = ['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm','video/mp4'];
+  var candidates = ['video/mp4;codecs=h264','video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
   for (var i=0; i<candidates.length; i++) {
     if (MediaRecorder.isTypeSupported(candidates[i])) { mimeType = candidates[i]; break; }
   }
@@ -795,17 +795,17 @@ function startRecord() {
 
   mediaRecorder.onstop = function() {
     clearInterval(recInterval);
-    var blob = new Blob(recordedChunks, {type: mimeType || 'video/webm'});
-    var ext  = mimeType.includes('mp4') ? 'mp4' : 'webm';
+    var blob = new Blob(recordedChunks, {type: mimeType || 'video/mp4'});
+    var ext  = 'mp4'; // Always save as .mp4 — compatible with Instagram, WhatsApp, iOS
     var suffix = currentMode==='single'? '_'+selectedType.replace('−','-') : '_all';
     var url = URL.createObjectURL(blob);
     var a   = document.createElement('a');
     a.download = 'bloodbank_ripas'+suffix+'_'+currentFmt+'_animated.'+ext;
     a.href = url; a.click();
     setTimeout(function(){ URL.revokeObjectURL(url); }, 5000);
-    btn.textContent  = '🎬 Record Video';
+    btn.textContent  = '🎬 Record MP4';
     btn.classList.remove('recording');
-    timer.textContent = 'Video saved ✓ — upload directly to Instagram / WhatsApp';
+    timer.textContent = 'MP4 saved ✓ — ready for Instagram Reels, WhatsApp & Stories';
     hint.textContent  = currentFmt==='portrait'
       ? 'Portrait 9:16 — for Instagram Reels & Stories'
       : 'Square 1:1 — for Instagram Feed posts';
@@ -864,7 +864,7 @@ function stopRecord() {
   }
   clearInterval(recInterval);
   var btn = document.getElementById('recBtn');
-  btn.textContent = '🎬 Record Video';
+  btn.textContent = '🎬 Record MP4';
   btn.classList.remove('recording');
 }
 
