@@ -776,7 +776,11 @@ function startRecord() {
 
   // Check codec support
   var mimeType = '';
-  var candidates = ['video/mp4;codecs=h264','video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
+  var candidates = ['video/var candidates = [
+  'video/mp4;codecs=avc1.42E01E', // strongest iPhone-compatible H264
+  'video/mp4',
+  'video/webm;codecs=vp8'
+];
   for (var i=0; i<candidates.length; i++) {
     if (MediaRecorder.isTypeSupported(candidates[i])) { mimeType = candidates[i]; break; }
   }
@@ -795,7 +799,7 @@ function startRecord() {
 
   mediaRecorder.onstop = function() {
     clearInterval(recInterval);
-    var blob = new Blob(recordedChunks, {type: mimeType || 'video/mp4'});
+    var blob = new Blob(recordedChunks, {type: 'video/mp4'});
     var ext  = 'mp4'; // Always save as .mp4 — compatible with Instagram, WhatsApp, iOS
     var suffix = currentMode==='single'? '_'+selectedType.replace('−','-') : '_all';
     var url = URL.createObjectURL(blob);
